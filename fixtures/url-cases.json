@@ -1,0 +1,11 @@
+[
+  { "base": "http://x/api/", "path": "/faqs", "url": "http://x/api/faqs" },
+  { "base": "http://x/api", "path": "faqs", "url": "http://x/api/faqs" },
+  { "base": "https://x.id/", "path": "//faqs", "url": "https://x.id/faqs" },
+  { "base": "https://x.id/https://x.id/", "path": "/faqs", "url": "https://x.id/faqs" },
+  { "base": "https://x.id/api", "path": "https://x.id/api/faqs?page=1", "url": "https://x.id/api/faqs?page=1" },
+  { "base": "https://x.id/api", "path": "https://x.id/https://x.id/api/faqs", "url": "https://x.id/api/faqs" },
+  { "base": "https://x.id/api", "path": "/a//b?u=http://y//z", "url": "https://x.id/api/a/b?u=http://y//z" },
+  { "base": "https://x.id/api", "path": "", "url": "https://x.id/api" },
+  { "base": "https://x.id/api/public", "path": "https://x.id//api/public/faqs", "url": "https://x.id/api/public/faqs" }
+]

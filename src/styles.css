@@ -1,0 +1,563 @@
+@import 'tailwindcss';
+
+/* Dark mode follows data-theme on <html> (set in index.html and App). */
+@custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
+
+/* ── Tokens ───────────────────────────────────────────────────────────────────
+   Two channels: CH1 = Before (amber), CH2 = After (blue).
+   Dark is the default look; light mirrors it. */
+
+:root,
+:root[data-theme='dark'] {
+  --chrome: #08090b; /* title bar */
+  --bg: #0b0c0e; /* window, inset wells, fields */
+  --surface: #111216; /* cards */
+  --surface-2: #15161b; /* illustrations, inset blocks */
+  --surface-3: #23252c; /* active segment */
+  --pop: #16171c; /* menus, dialogs */
+  --hover: rgb(255 255 255 / 0.06);
+  --tint: rgb(255 255 255 / 0.04); /* secondary button fill */
+
+  --ink-strong: #f4f5f7;
+  --ink: #e8e9ec;
+  --ink-2: #c9ccd3;
+  --muted: #a9adb5;
+  --subtle: #8a8e97;
+  --icon: #9a9ea7;
+  --faint: #7c808a; /* placeholders, disabled */
+
+  --rule: rgb(255 255 255 / 0.06);
+  --rule-strong: rgb(255 255 255 / 0.1);
+  --field: rgb(255 255 255 / 0.08);
+  --field-hover: rgb(255 255 255 / 0.16);
+  --field-focus: rgb(255 255 255 / 0.32);
+  --field-glow: rgb(255 255 255 / 0.06);
+
+  --before: #f2a93b;
+  --after: #5ab0ff;
+  --before-text: #f2c27a;
+  --after-text: #9ccdff;
+  --better: #5fd3a3;
+  --worse: #ff8a7a;
+  --warn: #f5b85a;
+  --focus: #8ec5ff;
+
+  --primary: #f4f5f7;
+  --primary-hover: #ffffff;
+  --primary-fg: #0b0c0e;
+
+  --overlay: rgb(0 0 0 / 0.55);
+  --shadow-card: 0 0 0 1px var(--rule), 0 1px 2px rgb(0 0 0 / 0.4);
+  --shadow-pop: 0 0 0 1px rgb(255 255 255 / 0.08), 0 16px 40px rgb(0 0 0 / 0.55);
+  --shadow-raise: 0 0 0 1px rgb(255 255 255 / 0.08), 0 1px 2px rgb(0 0 0 / 0.5);
+  --shadow-primary: inset 0 1px 0 rgb(255 255 255 / 0.4), 0 2px 8px rgb(0 0 0 / 0.35);
+  color-scheme: dark;
+}
+
+:root[data-theme='light'] {
+  --chrome: #e9e9e6;
+  --bg: #f3f3f1;
+  --surface: #ffffff;
+  --surface-2: #f3f3f1;
+  --surface-3: #ffffff;
+  --pop: #ffffff;
+  --hover: rgb(15 16 20 / 0.05);
+  --tint: rgb(15 16 20 / 0.03);
+
+  --ink-strong: #0b0c0e;
+  --ink: #1b1c1f;
+  --ink-2: #3a3d44;
+  --muted: #555a63;
+  --subtle: #676b74;
+  --icon: #676b74;
+  --faint: #8c9098;
+
+  --rule: rgb(15 16 20 / 0.08);
+  --rule-strong: rgb(15 16 20 / 0.13);
+  --field: rgb(15 16 20 / 0.12);
+  --field-hover: rgb(15 16 20 / 0.24);
+  --field-focus: rgb(15 16 20 / 0.45);
+  --field-glow: rgb(15 16 20 / 0.06);
+
+  --before: #b8680a;
+  --after: #1173cc;
+  --before-text: #8a4d00;
+  --after-text: #0a5aa6;
+  --better: #13804f;
+  --worse: #c43b2e;
+  --warn: #9a5b00;
+  --focus: #1173cc;
+
+  --primary: #16171a;
+  --primary-hover: #000000;
+  --primary-fg: #ffffff;
+
+  --overlay: rgb(15 16 20 / 0.32);
+  --shadow-card: 0 0 0 1px var(--rule), 0 1px 2px rgb(15 16 20 / 0.05);
+  --shadow-pop: 0 0 0 1px rgb(15 16 20 / 0.1), 0 16px 40px -8px rgb(15 16 20 / 0.22);
+  --shadow-raise: 0 0 0 1px rgb(15 16 20 / 0.1), 0 1px 2px rgb(15 16 20 / 0.08);
+  --shadow-primary: 0 1px 2px rgb(15 16 20 / 0.2);
+  color-scheme: light;
+}
+
+:root {
+  --before-soft: color-mix(in oklab, var(--before) 14%, transparent);
+  --after-soft: color-mix(in oklab, var(--after) 14%, transparent);
+  --worse-soft: color-mix(in oklab, var(--worse) 12%, transparent);
+  --better-soft: color-mix(in oklab, var(--better) 12%, transparent);
+  --warn-soft: color-mix(in oklab, var(--warn) 12%, transparent);
+  --ring-soft: var(--field-glow);
+  --hatch: repeating-linear-gradient(135deg, color-mix(in oklab, var(--ink) 15%, transparent) 0 1px, transparent 1px 5px);
+
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --dur-1: 120ms;
+  --dur-2: 160ms;
+  --dur-3: 220ms;
+
+  --titlebar-h: 40px;
+}
+
+@theme inline {
+  --color-chrome: var(--chrome);
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
+  --color-pop: var(--pop);
+  --color-hover: var(--hover);
+  --color-tint: var(--tint);
+  --color-ink-strong: var(--ink-strong);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-muted: var(--muted);
+  --color-subtle: var(--subtle);
+  --color-icon: var(--icon);
+  --color-faint: var(--faint);
+  --color-rule: var(--rule);
+  --color-rule-strong: var(--rule-strong);
+  --color-before: var(--before);
+  --color-after: var(--after);
+  --color-before-text: var(--before-text);
+  --color-after-text: var(--after-text);
+  --color-better: var(--better);
+  --color-worse: var(--worse);
+  --color-warn: var(--warn);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-fg: var(--primary-fg);
+  --color-before-soft: var(--before-soft);
+  --color-after-soft: var(--after-soft);
+  --color-worse-soft: var(--worse-soft);
+  --color-better-soft: var(--better-soft);
+  --color-warn-soft: var(--warn-soft);
+  --shadow-card: var(--shadow-card);
+  --shadow-pop: var(--shadow-pop);
+  --shadow-raise: var(--shadow-raise);
+}
+
+@theme {
+  --font-sans: 'Geist Variable', 'Geist', ui-sans-serif, system-ui, 'Segoe UI', sans-serif;
+  --font-mono: 'Geist Mono Variable', 'Geist Mono', ui-monospace, 'Cascadia Mono', monospace;
+
+  /* 11 / 12 / 13 / 14 / 15 / 20 / 28 / 32 px */
+  --text-2xs: 0.6875rem;
+  --text-2xs--line-height: 1.4;
+  --text-xs: 0.75rem;
+  --text-xs--line-height: 1.45;
+  --text-sm: 0.8125rem;
+  --text-sm--line-height: 1.5;
+  --text-base: 0.875rem;
+  --text-base--line-height: 1.5;
+  --text-md: 0.9375rem;
+  --text-md--line-height: 1.4;
+  --text-lg: 1.25rem;
+  --text-lg--line-height: 1.3;
+  --text-xl: 1.75rem;
+  --text-xl--line-height: 1.2;
+  --text-xl--letter-spacing: -0.025em;
+  --text-2xl: 2rem;
+  --text-2xl--line-height: 1.15;
+  --text-2xl--letter-spacing: -0.025em;
+
+  --radius-xs: 6px;
+  --radius-sm: 8px;
+  --radius-md: 10px;
+  --radius-card: 14px;
+
+  --animate-settle: settle var(--dur-2) var(--ease-out);
+  --animate-fade: fade var(--dur-2) var(--ease-out);
+  --animate-collapse-open: collapse-open var(--dur-3) var(--ease-out);
+  --animate-collapse-close: collapse-close var(--dur-2) var(--ease-out);
+}
+
+@keyframes settle {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+}
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes collapse-open {
+  from {
+    height: 0;
+    opacity: 0;
+  }
+  to {
+    height: var(--radix-collapsible-content-height);
+  }
+}
+@keyframes collapse-close {
+  from {
+    height: var(--radix-collapsible-content-height);
+  }
+  to {
+    height: 0;
+    opacity: 0;
+  }
+}
+@keyframes live {
+  50% {
+    opacity: 0.3;
+  }
+}
+
+/* ── Base ─────────────────────────────────────────────────────────────────── */
+
+@layer base {
+  *,
+  ::before,
+  ::after {
+    border-color: var(--rule);
+  }
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  /* A desktop window: the page itself never scrolls (the content pane does),
+     and chrome text isn't selectable like a web page. */
+  body {
+    margin: 0;
+    overflow: hidden;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    font-size: var(--text-base);
+    line-height: var(--text-base--line-height);
+    user-select: none;
+    -webkit-user-select: none;
+    cursor: default;
+  }
+  input,
+  textarea,
+  [contenteditable],
+  .selectable {
+    user-select: text;
+    -webkit-user-select: text;
+  }
+  ::selection {
+    background: var(--after-soft);
+  }
+  p {
+    text-wrap: pretty;
+  }
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+  svg.lucide {
+    stroke-width: 1.8px;
+  }
+  svg.lucide * {
+    vector-effect: non-scaling-stroke;
+  }
+  button:focus-visible,
+  a:focus-visible,
+  [tabindex]:focus-visible,
+  [role='checkbox']:focus-visible,
+  [role='switch']:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
+  }
+  input:focus,
+  textarea:focus,
+  select:focus {
+    outline: none;
+  }
+  input,
+  textarea,
+  select {
+    font: inherit;
+    color: inherit;
+  }
+  button {
+    cursor: pointer;
+  }
+  button:disabled {
+    cursor: not-allowed;
+  }
+  input[type='number'] {
+    -moz-appearance: textfield;
+  }
+  input[type='number']::-webkit-inner-spin-button,
+  input[type='number']::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  /* Native-feeling scrollbars on the content pane. */
+  ::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--rule-strong);
+    border: 3px solid transparent;
+    border-radius: 99px;
+    background-clip: padding-box;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: var(--field-hover);
+  }
+  ::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+}
+
+/* ── Utilities ────────────────────────────────────────────────────────────── */
+
+@utility font-mono {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums slashed-zero;
+  font-variant-ligatures: none;
+}
+
+@utility label-caps {
+  font-size: var(--text-2xs);
+  line-height: var(--text-2xs--line-height);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--subtle);
+}
+
+@utility hatch {
+  background-image: var(--hatch);
+}
+
+@utility live-dot {
+  animation: live 1.2s ease-in-out infinite;
+}
+
+@utility swatch {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  flex: none;
+  border-radius: 9999px;
+}
+
+/* Raised card on the window background. */
+@utility card {
+  background-color: var(--surface);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+}
+
+/* Inset well (field groups, lists) inside a card. */
+@utility well {
+  background-color: var(--bg);
+  box-shadow: 0 0 0 1px var(--rule);
+}
+
+/* Text field frame: hairline ring that strengthens on hover / focus. */
+@utility field {
+  background-color: var(--bg);
+  box-shadow: 0 0 0 1px var(--field);
+  transition: box-shadow 150ms ease-out;
+  &:hover {
+    box-shadow: 0 0 0 1px var(--field-hover);
+  }
+  &:focus-within {
+    box-shadow:
+      0 0 0 1px var(--field-focus),
+      0 0 0 4px var(--field-glow);
+  }
+}
+
+/* Segmented control: a well with a raised active segment. */
+@utility segmented {
+  display: flex;
+  gap: 2px;
+  padding: 3px;
+  border-radius: 10px;
+  background-color: var(--bg);
+  box-shadow: 0 0 0 1px var(--rule);
+}
+@utility segment {
+  border-radius: 7px;
+  font-weight: 500;
+  white-space: nowrap;
+  color: var(--icon);
+  background: transparent;
+  transition:
+    background-color 150ms ease-out,
+    color 150ms ease-out,
+    box-shadow 150ms ease-out;
+  &:hover:not(:disabled) {
+    color: var(--ink-strong);
+  }
+  &[aria-checked='true'] {
+    background-color: var(--surface-3);
+    color: var(--ink-strong);
+    box-shadow: var(--shadow-raise);
+  }
+  &:disabled {
+    opacity: 0.45;
+  }
+}
+
+/* Delta pill: green when After is better, red when worse. */
+@utility pill {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: var(--text-xs);
+  line-height: 1.5;
+  font-weight: 500;
+  padding: 2px 8px;
+  border-radius: 99px;
+  white-space: nowrap;
+}
+
+/* Old names kept for the menus, tooltips and dialogs: solid, never blurred. */
+@utility glass-strong {
+  background-color: var(--pop);
+  box-shadow: var(--shadow-pop);
+}
+
+@utility scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: var(--rule-strong) transparent;
+}
+
+/* ── Overlays (Radix data-state driven) ───────────────────────────────────── */
+
+.ui-overlay[data-state='open'] {
+  animation: fade var(--dur-2) var(--ease-out);
+}
+.ui-overlay[data-state='closed'] {
+  animation: fade-out var(--dur-1) ease-out forwards;
+}
+
+.ui-dialog {
+  translate: -50% -50%;
+}
+.ui-dialog[data-state='open'] {
+  animation: dialog-in var(--dur-3) var(--ease-out);
+}
+.ui-dialog[data-state='closed'] {
+  animation: dialog-out var(--dur-1) ease-out forwards;
+}
+@keyframes dialog-in {
+  from {
+    opacity: 0;
+    scale: 0.97;
+  }
+}
+@keyframes dialog-out {
+  to {
+    opacity: 0;
+    scale: 0.98;
+  }
+}
+
+.ui-sheet[data-state='open'] {
+  animation: sheet-in 240ms var(--ease-out);
+}
+.ui-sheet[data-state='closed'] {
+  animation: sheet-out var(--dur-2) ease-out forwards;
+}
+@keyframes sheet-in {
+  from {
+    translate: 100% 0;
+  }
+}
+@keyframes sheet-out {
+  to {
+    translate: 100% 0;
+  }
+}
+
+.ui-pop,
+.ui-tip {
+  transform-origin: var(--radix-dropdown-menu-content-transform-origin, var(--radix-tooltip-content-transform-origin));
+}
+.ui-pop[data-state='open'] {
+  animation: pop-in var(--dur-2) var(--ease-out);
+}
+.ui-pop[data-state='closed'] {
+  animation: fade-out var(--dur-1) ease-out forwards;
+}
+.ui-tip[data-state='delayed-open'] {
+  animation: pop-in 140ms var(--ease-out);
+}
+@keyframes pop-in {
+  from {
+    opacity: 0;
+    scale: 0.97;
+  }
+}
+@keyframes fade-out {
+  to {
+    opacity: 0;
+  }
+}
+
+.toast {
+  transition:
+    opacity var(--dur-2) var(--ease-out),
+    transform var(--dur-2) var(--ease-out);
+  @starting-style {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+/* Buttons press in slightly, like the design. */
+.press {
+  transition:
+    background-color 150ms ease-out,
+    color 150ms ease-out,
+    box-shadow 150ms ease-out,
+    transform 120ms ease-out;
+}
+.press:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+/* ── Motion policy ────────────────────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+  }
+  .press:active:not(:disabled) {
+    transform: none;
+  }
+}
