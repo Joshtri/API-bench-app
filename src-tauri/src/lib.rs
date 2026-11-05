@@ -114,6 +114,12 @@ pub fn run() {
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_store::Builder::new().build())
         .plugin(tauri_plugin_dialog::init())
+        .plugin(tauri_plugin_process::init())
+        .setup(|app| {
+            #[cfg(desktop)]
+            app.handle().plugin(tauri_plugin_updater::Builder::new().build())?;
+            Ok(())
+        })
         .manage(Runner::default())
         .invoke_handler(tauri::generate_handler![run_bench, cancel_bench, export_file, import_file])
         .run(tauri::generate_context!())

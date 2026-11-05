@@ -2,6 +2,9 @@
 #   Windows x64:  .exe (NSIS installer) and .msi
 #   Linux x64:    .AppImage, .deb, .rpm
 #   Linux ARM64:  .AppImage, .deb, .rpm
+#   plus signed update files and latest.json for the in-app updater.
+# Needs the repo secret TAURI_SIGNING_PRIVATE_KEY: the contents of the key made by
+# `bunx tauri signer generate -w ~/.tauri/api-bench.key` (the matching .pub is in tauri.conf.json).
 # Start it by pushing a tag that matches the app version
 # (git tag v0.1.1 && git push origin v0.1.1), or run it by hand from the Actions tab.
 name: Release
@@ -50,7 +53,13 @@ jobs:
       - uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Signs the update files so installed apps can trust them.
+          # The public half lives in src-tauri/tauri.conf.json (plugins.updater.pubkey).
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
         with:
+          # Uploads latest.json, which the in-app updater reads.
+          includeUpdaterJson: true
           tagName: v__VERSION__
           releaseName: "API Bench v__VERSION__"
           releaseBody: "Download the installer for your system below."

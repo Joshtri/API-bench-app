@@ -10,6 +10,7 @@ import ResultsView from './components/ResultsView'
 import RunBar from './components/RunBar'
 import Targets from './components/Targets'
 import TitleBar, { barButton } from './components/TitleBar'
+import UpdateButton from './components/UpdateButton'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from './components/ui/dropdown-menu'
 import { TooltipProvider } from './components/ui/tooltip'
 import { cn } from './components/ui/utils'
@@ -19,6 +20,7 @@ import { displayPath, parseHeaders } from './lib/format'
 import { stamp, toMarkdown } from './lib/report'
 import { cleanBase } from './lib/url'
 import { exportFile, importFile, load, loadStored, save, saveStored } from './lib/storage'
+import { useUpdater } from './lib/updater'
 import type { BenchEvent, Config, Profile, Run } from './lib/types'
 
 const HISTORY_LIMIT = 30
@@ -144,6 +146,7 @@ export default function App() {
   const [notice, setNotice] = useState<string | null>(null)
 
   const running = run?.status === 'running'
+  const updater = useUpdater()
   const problem = problemWith(config)
   const patch =
     <K extends keyof Config>(k: K) =>
@@ -338,6 +341,7 @@ export default function App() {
           }
           right={
             <>
+              <UpdateButton state={updater.state} onRestart={updater.restart} blocked={running} />
               <button type="button" className={barButton} onClick={() => setShowHistory(true)} aria-label={`History, ${history.length} saved runs`}>
                 <History />
                 <span className="max-sm:hidden">History</span>

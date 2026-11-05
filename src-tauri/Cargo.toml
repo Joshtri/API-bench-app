@@ -1,6 +1,6 @@
 [package]
 name = "api-benchmark-desktop"
-version = "0.1.1"
+version = "0.1.2"
 description = "Compare an API before and after a migration: same data? how much faster?"
 authors = ["you"]
 edition = "2024"
@@ -28,6 +28,7 @@ tokio-util = "0.7"
 hdrhistogram = { version = "7", default-features = false }
 chrono = "0.4"
 ts-rs = { version = "12", features = ["serde-compat"] }
+tauri-plugin-process = "2"
 
 [dev-dependencies]
 tokio = { version = "1", features = ["rt-multi-thread", "macros", "net", "io-util", "time"] }
@@ -43,3 +44,6 @@ lto = true
 opt-level = 3
 panic = "abort"
 strip = true
+
+[target.'cfg(not(any(target_os = "android", target_os = "ios")))'.dependencies]
+tauri-plugin-updater = "2"
