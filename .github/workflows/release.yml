@@ -1,6 +1,9 @@
-# Builds the Windows and Linux installers and attaches them to a draft GitHub Release.
-# Start it by pushing a tag (git tag v0.1.0 && git push origin v0.1.0),
-# or run it by hand from the Actions tab.
+# Builds the installers and publishes them on a GitHub Release:
+#   Windows x64:  .exe (NSIS installer) and .msi
+#   Linux x64:    .AppImage, .deb, .rpm
+#   Linux ARM64:  .AppImage, .deb, .rpm
+# Start it by pushing a tag that matches the app version
+# (git tag v0.1.1 && git push origin v0.1.1), or run it by hand from the Actions tab.
 name: Release
 
 on:
@@ -20,6 +23,7 @@ jobs:
         include:
           - platform: windows-latest
           - platform: ubuntu-22.04
+          - platform: ubuntu-22.04-arm
 
     runs-on: ${{ matrix.platform }}
 
@@ -27,7 +31,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Install Linux dependencies
-        if: matrix.platform == 'ubuntu-22.04'
+        if: startsWith(matrix.platform, 'ubuntu')
         run: |
           sudo apt-get update
           sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
@@ -50,5 +54,6 @@ jobs:
           tagName: v__VERSION__
           releaseName: "API Bench v__VERSION__"
           releaseBody: "Download the installer for your system below."
-          releaseDraft: true
+          # Published right away so the landing page can link to the files.
+          releaseDraft: false
           prerelease: false

@@ -1,6 +1,6 @@
 [package]
 name = "api-benchmark-desktop"
-version = "0.1.0"
+version = "0.1.1"
 description = "Compare an API before and after a migration: same data? how much faster?"
 authors = ["you"]
 edition = "2024"

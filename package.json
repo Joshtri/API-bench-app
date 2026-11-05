@@ -1,7 +1,7 @@
 {
   "name": "api-benchmark-desktop",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Compare an API before and after a migration: same data? how much faster?",
   "type": "module",
   "scripts": {
