@@ -40,7 +40,7 @@
   },
   "plugins": {
     "updater": {
-      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDUzOTkzNzlFRjRFOThFQTkKUldTcGp1bjBuamVaVXhNNWd3aW1wQkVxT3h2Vkcza0FqR3ZsazM2ZTROMlRJcFYyeDV0OW15UXIK",
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDQwRUY1MEJERDFDNTU1OEIKUldTTFZjWFJ2VkR2UUJPSENib01zZXJJOFlhSEJKVU5RWXJPSmdoYWZQYm15Y1lKZXRhUE5VNDcK",
       "endpoints": [
         "https://github.com/Joshtri/API-bench-app/releases/latest/download/latest.json"
       ],
